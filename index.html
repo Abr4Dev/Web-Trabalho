@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Cachorros</title>
     <style>
+        /* Estilos para tabela e modal */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -63,7 +64,7 @@
 </head>
 <body>
     <h1>Lista de Cachorros</h1>
-    <button onclick="abrirModal()">Adicionar Cachorro</button>
+    <button onclick="abrirModalAdicionar()">Adicionar Cachorro</button>
     <table>
         <thead>
             <tr>
@@ -81,9 +82,9 @@
     </table>
 
     <!-- Modal para adicionar cachorro -->
-    <div id="modal" class="modal">
+    <div id="modal-adicionar" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="fecharModal()">&times;</span>
+            <span class="close" onclick="fecharModalAdicionar()">&times;</span>
             <h2>Adicionar Novo Cachorro</h2>
             <form id="form-adicionar">
                 <label for="nome-cachorro">Nome do Cachorro:</label><br>
@@ -102,6 +103,33 @@
                 <input type="url" id="imagem" required><br><br>
 
                 <button type="submit">Adicionar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para editar cachorro -->
+    <div id="modal-editar" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="fecharModalEditar()">&times;</span>
+            <h2>Editar Cachorro</h2>
+            <form id="form-editar">
+                <input type="hidden" id="index-editar">
+                <label for="nome-cachorro-editar">Nome do Cachorro:</label><br>
+                <input type="text" id="nome-cachorro-editar" required><br><br>
+
+                <label for="nome-dono-editar">Nome do Dono:</label><br>
+                <input type="text" id="nome-dono-editar" required><br><br>
+
+                <label for="telefone-editar">Telefone:</label><br>
+                <input type="text" id="telefone-editar" required><br><br>
+
+                <label for="email-editar">Email:</label><br>
+                <input type="email" id="email-editar" required><br><br>
+
+                <label for="imagem-editar">URL da Imagem:</label><br>
+                <input type="url" id="imagem-editar" required><br><br>
+
+                <button type="submit">Editar</button>
             </form>
         </div>
     </div>

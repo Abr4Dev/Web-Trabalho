@@ -5,8 +5,10 @@ const apiUrl = "https://run.mocky.io/v3/9f1920a6-5599-4b72-8a55-d7c9d3d8bb40";
 const tabelaCachorros = document.getElementById("tabela-cachorros");
 
 // Modal
-const modal = document.getElementById("modal");
+const modalAdicionar = document.getElementById("modal-adicionar");
+const modalEditar = document.getElementById("modal-editar");
 const formAdicionar = document.getElementById("form-adicionar");
+const formEditar = document.getElementById("form-editar");
 
 // Carregar dados da API
 async function carregarCachorros() {
@@ -40,7 +42,7 @@ function adicionarLinha(cachorro, index) {
         <td>${cachorro.telefone}</td>
         <td>${cachorro.email}</td>
         <td>
-            <button onclick="editarCachorro(${index})">Editar</button>
+            <button onclick="abrirModalEditar(${index})">Editar</button>
             <button onclick="excluirCachorro(${index})">Excluir</button>
         </td>
     `;
@@ -49,19 +51,38 @@ function adicionarLinha(cachorro, index) {
     tabelaCachorros.appendChild(linha);
 }
 
-// Abrir modal
-function abrirModal() {
-    modal.style.display = "block";
+// Abrir modal de adicionar cachorro
+function abrirModalAdicionar() {
+    modalAdicionar.style.display = "block";
 }
 
-// Fechar modal
-function fecharModal() {
-    modal.style.display = "none";
+// Fechar modal de adicionar cachorro
+function fecharModalAdicionar() {
+    modalAdicionar.style.display = "none";
+}
+
+// Abrir modal de editar cachorro
+function abrirModalEditar(index) {
+    const cachorro = tabelaCachorros.rows[index].cells;
+    
+    document.getElementById("index-editar").value = index;
+    document.getElementById("nome-cachorro-editar").value = cachorro[1].textContent;
+    document.getElementById("nome-dono-editar").value = cachorro[2].textContent;
+    document.getElementById("telefone-editar").value = cachorro[3].textContent;
+    document.getElementById("email-editar").value = cachorro[4].textContent;
+    document.getElementById("imagem-editar").value = cachorro[0].children[0].src;
+
+    modalEditar.style.display = "block";
+}
+
+// Fechar modal de editar cachorro
+function fecharModalEditar() {
+    modalEditar.style.display = "none";
 }
 
 // Adicionar um novo cachorro ao clicar em "Adicionar"
 formAdicionar.addEventListener("submit", function(event) {
-    event.preventDefault();  // Previne o comportamento padrão de envio do formulário
+    event.preventDefault();
 
     const nomeCachorro = document.getElementById("nome-cachorro").value;
     const nomeDono = document.getElementById("nome-dono").value;
@@ -70,39 +91,45 @@ formAdicionar.addEventListener("submit", function(event) {
     const imagem = document.getElementById("imagem").value;
 
     if (nomeCachorro && nomeDono && telefone && email && imagem) {
-        const novoCachorro = { cachorro: nomeCachorro, dono: nomeDono, telefone, email, imagem };
-        adicionarLinha(novoCachorro, tabelaCachorros.rows.length);
-        fecharModal();  // Fechar modal após adicionar
-    } else {
-        alert("Por favor, preencha todos os campos.");
+        const novoCachorro = { cachorro: nomeCachorro, dono: nomeDono, telefone: telefone, email: email, imagem: imagem };
+
+        // Adicionar o cachorro à tabela (simular API)
+        fetch(apiUrl, {
+            method: 'POST',
+            body: JSON.stringify(novoCachorro)
+        }).then(() => {
+            carregarCachorros();
+            fecharModalAdicionar();
+        });
     }
 });
 
-// Função para editar um cachorro
-function editarCachorro(index) {
-    const linha = tabelaCachorros.querySelector(`[data-index='${index}']`);
-    const colunas = linha.children;
+// Editar cachorro
+formEditar.addEventListener("submit", function(event) {
+    event.preventDefault();
 
-    const cachorro = prompt("Editar nome do cachorro:", colunas[1].textContent);
-    const dono = prompt("Editar nome do dono:", colunas[2].textContent);
-    const telefone = prompt("Editar telefone:", colunas[3].textContent);
-    const email = prompt("Editar email:", colunas[4].textContent);
-    const imagem = prompt("Editar URL da imagem do cachorro:", colunas[0].children[0].src);
+    const index = document.getElementById("index-editar").value;
+    const nomeCachorro = document.getElementById("nome-cachorro-editar").value;
+    const nomeDono = document.getElementById("nome-dono-editar").value;
+    const telefone = document.getElementById("telefone-editar").value;
+    const email = document.getElementById("email-editar").value;
+    const imagem = document.getElementById("imagem-editar").value;
 
-    if (cachorro && dono && telefone && email && imagem) {
-        colunas[1].textContent = cachorro;
-        colunas[2].textContent = dono;
-        colunas[3].textContent = telefone;
-        colunas[4].textContent = email;
-        colunas[0].children[0].src = imagem;
-    }
-}
+    // Atualizar o cachorro na tabela (simular API)
+    tabelaCachorros.rows[index].cells[1].textContent = nomeCachorro;
+    tabelaCachorros.rows[index].cells[2].textContent = nomeDono;
+    tabelaCachorros.rows[index].cells[3].textContent = telefone;
+    tabelaCachorros.rows[index].cells[4].textContent = email;
+    tabelaCachorros.rows[index].cells[0].children[0].src = imagem;
 
-// Função para excluir um cachorro
+    fecharModalEditar();
+});
+
+// Excluir cachorro
 function excluirCachorro(index) {
-    const linha = tabelaCachorros.querySelector(`[data-index='${index}']`);
-    tabelaCachorros.removeChild(linha);
+    // Simular exclusão do cachorro da tabela
+    tabelaCachorros.deleteRow(index);
 }
 
-// Carregar os cachorros ao abrir a página
+// Inicializar a tabela
 carregarCachorros();
